@@ -8,7 +8,8 @@ import bodyParser from 'body-parser'
 function getAutoSuggestUsers(loginSubstring: string, limit: number) {
   const sortedUsers = users;
   sortedUsers.sort((a, b) => (a.login > b.login) ? 1 : ((b.login > a.login) ? -1 : 0))
-  return sortedUsers.slice(0, limit)
+  const resultArr = sortedUsers.filter((item) => item.login.includes(loginSubstring))
+  return resultArr.slice(0, limit)
 }
 
 // create application/json parser
@@ -20,26 +21,38 @@ function routes(app: Express) {
   app.get('/healthcheck', (req: Request, res: Response) => res.sendStatus(200))
 
   // get user by id
-  app.get('/api/user/:id', (req: Request, res: Response) => {
+  app.get('/api/users/:id', (req: Request, res: Response) => {
     logger.info(req.params.id);
-    let user = users.filter((item) => item.id === req.params.id)
+    let user = users.find((item) => item.id === req.params.id)
+    if (!user) res.status(404).json({
+      status: 'failed',
+      message: `User ${req.params.id} doesn't exist`
+    })
+    if (user?.isDeleted) res.status(404).json({
+      status: 'failed',
+      message: `User ${req.params.id} deleted`
+    })
     res.json(user)
   })
   
   // create User
-  app.post('/api/user/', jsonParser, validateSchema(userSchema), (req: Request, res: Response) => {
+  app.post('/api/users', validateSchema(userSchema), (req: Request, res: Response) => {
     logger.info(req);
     users.push(req.body)
     res.json({user: req.body})
   })
 
   // update User
-  app.put('/api/user/', jsonParser, validateSchema(userSchema), (req: Request, res: Response) => {
+  app.put('/api/users', validateSchema(userSchema), (req: Request, res: Response) => {
     logger.info(req);
     const user = users.find((item) => item.id === req.body.id);
     if (!user) res.status(404).json({
       status: 'failed',
       message: `User ${req.body.id} doesn't exist`
+    })
+    if (user?.isDeleted) res.status(404).json({
+      status: 'failed',
+      message: `User ${req.body.id} deleted`
     })
     users.forEach((item) => {
       if (item.id === req.body.id) {
@@ -52,10 +65,10 @@ function routes(app: Express) {
   })
 
   // get auto-suggest list from limitusers, sorted by login property and filtered by loginSubstringin the login property:getAutoSuggestUsers(loginSubstring, limit)
-  app.get('/api/user/', (req: Request, res: Response) => {
+  app.get('/api/users', (req: Request, res: Response) => {
     console.log('login: ' + req.query.login, 'limit: ' + req.query.limit)
     
-    let limit: number = 0;
+    let limit: number = 1;
     let login: string = '';
 
     if (req.query.limit) {
@@ -75,7 +88,7 @@ function routes(app: Express) {
   })
 
   // remove user (soft delete–user gets marked with isDeletedflag, but not removed from the collection).
-  app.delete('/api/user/', jsonParser, (req: Request, res: Response) => {
+  app.delete('/api/users', (req: Request, res: Response) => {
     logger.info(req);
     const user = users.find((item) => item.id === req.body.id);
     if (!user) res.status(404).json({

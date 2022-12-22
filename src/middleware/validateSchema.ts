@@ -1,28 +1,29 @@
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Request, Response } from "express";
 
 function errorResponse(schemaErrors: any) {
   const errors = schemaErrors.map((error: any) => {
-    let {path, message } = error
-    return { path, message}
+    const { path, message } = error;
+    return { path, message };
   });
   return {
-    status: 'failed', 
+    status: "failed",
     errors,
-  }
+  };
 }
 
 function validateSchema(schema: any) {
   return (req: Request, res: Response, next: NextFunction) => {
     const { error } = schema.validate(req.body, {
       abortEarly: false,
-      allowUnknown: false
-    })
-    if(error) { //.isJoi
-      res.status(400).json(errorResponse(error.details))
-    } else {
-      next()
+      allowUnknown: false,
+    });
+    if (error) {
+      res.status(400).json(errorResponse(error.details));
     }
-  }
+ else {
+      next();
+    }
+  };
 }
 
 export default validateSchema;

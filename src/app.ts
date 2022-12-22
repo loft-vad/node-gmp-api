@@ -1,17 +1,30 @@
-import express from 'express'
-import logger from "./utils/logger"
-import routes from './routes'
-import cors from 'cors'
+import "dotenv/config";
+import logger from "./utils/logger";
+import sequelize from "./data-access/db";
+import createServer from "./utils/server";
 
-const app = express()
+const PORT = process.env.PORT;
 
-app.use(express.json())
-app.use(cors())
+const app = createServer();
 
-app.listen(3333, ()=> {
-  logger.info('app is running')
-  routes(app)
-}).on('error', err => {
-  logger.error(err);
-  process.exit(1);
-});
+const start = async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync();
+    app
+      .listen(PORT, () => {
+        logger.info("app is running on the port ", PORT);
+      })
+      .on("error", (error) => {
+        logger.error(error);
+        process.exit(1);
+      });
+  }
+ catch (error) {
+    console.log(error);
+  }
+};
+
+start();
+
+export default app;

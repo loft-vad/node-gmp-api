@@ -1,58 +1,231 @@
 {
-    "root": true,
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "warnOnUnsupportedTypeScriptVersion": false,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "arrowFunctions": true,
+      "blockBindings": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "forOf": true,
+      "generators": false,
+      "modules": true,
+      "objectLiteralComputedProperties": true,
+      "objectLiteralDuplicateProperties": false,
+      "objectLiteralShorthandMethods": true,
+      "objectLiteralShorthandProperties": true,
+      "restParams": true,
+      "spread": true,
+      "superInFunctions": true,
+      "templateStrings": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jasmine": true,
+    "es6": true,
+    "jest": true
+  },
+  "plugins": ["@typescript-eslint"], //"no-null", , "eslint-plugin-local" , "import"
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "/built/**",
+    "/tests/**",
+    "/lib/**",
+    "/src/lib/*.generated.d.ts",
+    "/scripts/**/*.js",
+    "/scripts/**/*.d.*",
+    "/internal/**",
+    "/coverage/**"
+  ],
+  "rules": {
+    "sort-imports": [
+      "error",
+      {
+        "ignoreCase": true,
+        "ignoreDeclarationSort": true,
+        "allowSeparatedGroups": true
+      }
     ],
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-        "@typescript-eslint"
-    ],
-    "env": {
-        "browser": true,
-        "node": true,
-        "jasmine": true,
-        "es6": true,
-        "jest": true
-    },
-    "parserOptions": {
-        "ecmaFeatures": {
-            "arrowFunctions": true,
-            "blockBindings": true,
-            "classes": true,
-            "defaultParams": true,
-            "destructuring": true,
-            "forOf": true,
-            "generators": false,
-            "modules": true,
-            "objectLiteralComputedProperties": true,
-            "objectLiteralDuplicateProperties": false,
-            "objectLiteralShorthandMethods": true,
-            "objectLiteralShorthandProperties": true,
-            "restParams": true,
-            "spread": true,
-            "superInFunctions": true,
-            "templateStrings": true,
+
+    "@typescript-eslint/adjacent-overload-signatures": "error",
+    "@typescript-eslint/array-type": "error",
+    "@typescript-eslint/no-array-constructor": "error",
+
+    "brace-style": "off",
+    "@typescript-eslint/brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"],
+        "filter": {
+          "regex": "^(__String|[A-Za-z]+_[A-Za-z]+)$",
+          "match": false
         }
-    },
-    "rules": {
-        "@typescript-eslint/strict-boolean-expressions": [
-            2,
-            {
-                "allowString" : false,
-                "allowNumber" : false
-            }
-        ],
+      },
+      {
+        "selector": "interface",
+        "format": ["PascalCase"],
+        "custom": { "regex": "^I[A-Z]", "match": false },
+        "filter": {
+          "regex": "^I(Arguments|TextWriter|O([A-Z][a-z]+[A-Za-z]*)?)$",
+          "match": false
+        }
+      },
+      {
+        "selector": "variable",
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"],
+        "leadingUnderscore": "allow",
+        "filter": {
+          "regex": "^(_{1,2}filename|_{1,2}dirname|_+|[A-Za-z]+_[A-Za-z]+)$",
+          "match": false
+        }
+      },
+      {
+        "selector": "function",
+        "format": ["camelCase", "PascalCase"],
+        "leadingUnderscore": "allow",
+        "filter": { "regex": "^[A-Za-z]+_[A-Za-z]+$", "match": false }
+      },
+      {
+        "selector": "parameter",
+        "format": ["camelCase"],
+        "leadingUnderscore": "allow",
+        "filter": { "regex": "^(_+|[A-Za-z]+_[A-Z][a-z]+)$", "match": false }
+      },
+      {
+        "selector": "method",
+        "format": ["camelCase", "PascalCase"],
+        "leadingUnderscore": "allow",
+        "filter": { "regex": "^([0-9]+|[A-Za-z]+_[A-Za-z]+)$", "match": false }
+      },
+      {
+        "selector": "memberLike",
+        "format": ["camelCase"],
+        "leadingUnderscore": "allow",
+        "filter": { "regex": "^([0-9]+|[A-Za-z]+_[A-Za-z]+)$", "match": false }
+      },
+      {
+        "selector": "enumMember",
+        "format": ["camelCase", "PascalCase"],
+        "leadingUnderscore": "allow",
+        "filter": { "regex": "^[A-Za-z]+_[A-Za-z]+$", "match": false }
+      },
+      { "selector": "property", "format": null }
+    ],
+
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+    "@typescript-eslint/consistent-type-assertions": ["error", { "assertionStyle": "as" }],
+
+    "max-statements-per-line": ["error", { "max": 1 }],
+
+    "no-duplicate-imports": "off",
+    "@typescript-eslint/no-duplicate-imports": "error",
+
+    "@typescript-eslint/no-inferrable-types": "error",
+    "@typescript-eslint/no-misused-new": "error",
+    "@typescript-eslint/no-this-alias": "error",
+
+    "no-unused-expressions": "off",
+    "@typescript-eslint/no-unused-expressions": ["error", { "allowTernary": true }],
+
+    "@typescript-eslint/prefer-for-of": "error",
+    "@typescript-eslint/prefer-function-type": "error",
+    "@typescript-eslint/prefer-namespace-keyword": "error",
+    "@typescript-eslint/prefer-as-const": "error",
+
+    "quotes": "off",
+    "@typescript-eslint/quotes": ["error", "double", { "avoidEscape": true, "allowTemplateLiterals": true }],
+
+    "semi": "off",
+    "@typescript-eslint/semi": "error",
+    "@typescript-eslint/no-extra-semi": "error",
+
+    "space-before-function-paren": "off",
+    "@typescript-eslint/space-before-function-paren": [
+      "error",
+      {
+        "asyncArrow": "always",
+        "anonymous": "always",
+        "named": "never"
+      }
+    ],
+
+    "@typescript-eslint/triple-slash-reference": "error",
+    "@typescript-eslint/type-annotation-spacing": "error",
+    "@typescript-eslint/unified-signatures": "error",
+
+    "@typescript-eslint/no-extra-non-null-assertion": "error",
+
+    // eslint
+    "constructor-super": "error",
+    "curly": ["error", "multi-line"],
+    "dot-notation": "error",
+    "eqeqeq": "error",
+    "linebreak-style": ["error", "windows"],
+    "new-parens": "error",
+    "no-caller": "error",
+    "no-duplicate-case": "error",
+    "no-empty": "error",
+    "no-eval": "error",
+    "no-extra-bind": "error",
+    "no-fallthrough": "error",
+    "no-new-func": "error",
+    "no-new-wrappers": "error",
+    "no-return-await": "error",
+    "no-restricted-globals": [
+      "error",
+      { "name": "setTimeout" },
+      { "name": "clearTimeout" },
+      { "name": "setInterval" },
+      { "name": "clearInterval" },
+      { "name": "setImmediate" },
+      { "name": "clearImmediate" }
+    ],
+    "no-sparse-arrays": "error",
+    "no-template-curly-in-string": "error",
+    // "no-throw-literal": "error",
+    "no-trailing-spaces": "error",
+    "no-undef-init": "error",
+    "no-unsafe-finally": "error",
+    "no-unused-labels": "error",
+    "no-var": "error",
+    "object-shorthand": "error",
+    "prefer-const": "error",
+    "prefer-object-spread": "error",
+    "quote-props": ["error", "consistent-as-needed"],
+    "space-in-parens": "error",
+    "unicode-bom": ["error", "never"],
+    "use-isnan": "error",
+    "no-prototype-builtins": "error",
+    "no-self-assign": "error",
+    "no-dupe-else-if": "error"
+  },
+  "overrides": [
+    // By default, the ESLint CLI only looks at .js files. But, it will also look at
+    // any files which are referenced in an override config. Most users of typescript-eslint
+    // get this behavior by default by extending a recommended typescript-eslint config, which
+    // just so happens to override some core ESLint rules. We don't extend from any config, so
+    // explicitly reference TS files here so the CLI picks them up.
+    //
+    // ESLint in VS Code will lint any opened file (so long as it's not eslintignore'd), so
+    // that will work regardless of the below.
+    //
+    // The same applies to mjs files; ESLint appears to not scan those either.
+    { "files": ["*.ts", "*.mts", "*.cts", "*.mjs", "*.cjs"] },
+    {
+      "files": ["*.mjs", "*.mts"],
+      "rules": {
         "no-debugger": 1,
         // Possible errors
-        "comma-dangle": [
-            2,
-            "never"
-        ],
-        "no-cond-assign": [
-            2,
-            "always"
-        ],
+        "comma-dangle": [2, "never"],
+        "no-cond-assign": [2, "always"],
         "no-constant-condition": 2,
         "no-control-regex": 2,
         "no-dupe-args": 2,
@@ -61,10 +234,7 @@
         "no-empty-character-class": 2,
         "no-empty": 2,
         "no-extra-boolean-cast": 0,
-        "no-extra-parens": [
-            2,
-            "functions"
-        ],
+        "no-extra-parens": [2, "functions"],
         "no-extra-semi": 2,
         "no-func-assign": 2,
         "no-inner-declarations": 2,
@@ -80,21 +250,15 @@
         "no-unexpected-multiline": 0,
         // Best Practices
         "block-scoped-var": 2,
-        "complexity": [
-            2,
-            50
-        ],
-        "curly": [
-            2,
-            "multi-line"
-        ],
+        "complexity": [2, 50],
+        "curly": [2, "multi-line"],
         "default-case": 2,
         "dot-notation": [
-            2,
-            {
-                "allowKeywords": true,
-                "allowPattern": "^([a-z]+(_[a-z]+)+)|[A-Z]+|[A-Z]{1}[a-z]+$" 
-            }
+          2,
+          {
+            "allowKeywords": true,
+            "allowPattern": "^([a-z]+(_[a-z]+)+)|[A-Z]+|[A-Z]{1}[a-z]+$"
+          }
         ],
         "eqeqeq": 2,
         "guard-for-in": 2,
@@ -127,47 +291,38 @@
         "no-self-compare": 2,
         "no-sequences": 2,
         "no-unused-expressions": [
-            2,
-            {
-                "allowShortCircuit": true,
-                "allowTernary": false
-            }
+          2,
+          {
+            "allowShortCircuit": true,
+            "allowTernary": false
+          }
         ],
         "no-useless-call": 2,
         "no-with": 2,
         "radix": 2,
-        "wrap-iife": [
-            2,
-            "outside"
-        ],
+        "wrap-iife": [2, "outside"],
         "yoda": 2,
         // ES2015
         "arrow-parens": 0,
         "arrow-spacing": [
-            2,
-            {
-                "before": true,
-                "after": true
-            }
+          2,
+          {
+            "before": true,
+            "after": true
+          }
         ],
         "constructor-super": 2,
         "no-class-assign": 2,
         "no-const-assign": 2,
         "no-this-before-super": 0,
         "no-var": 2,
-        "object-shorthand": [
-            2,
-            "always"
-        ],
+        "object-shorthand": [2, "always"],
         "prefer-arrow-callback": 2,
         "prefer-const": 2,
         "prefer-spread": 2,
         "prefer-template": 2,
         // Strict Mode
-        "strict": [
-            2,
-            "never"
-        ],
+        "strict": [2, "never"],
         // Variables
         "no-catch-shadow": 2,
         "no-delete-var": 2,
@@ -186,162 +341,129 @@
         "no-new-require": 2,
         // Stylistic
         "array-bracket-spacing": [
-            2,
-            "never",
-            {
-                "singleValue": false,
-                "objectsInArrays": false,
-                "arraysInArrays": false
-            }
+          2,
+          "never",
+          {
+            "singleValue": false,
+            "objectsInArrays": false,
+            "arraysInArrays": false
+          }
         ],
         "newline-after-var": 0,
-        "brace-style": [
-            2,
-            "1tbs"
-        ],
+        "brace-style": [2, "1tbs"],
         "comma-spacing": [
-            2,
-            {
-                "before": false,
-                "after": true
-            }
+          2,
+          {
+            "before": false,
+            "after": true
+          }
         ],
-        "comma-style": [
-            2,
-            "last"
-        ],
-        "computed-property-spacing": [
-            2,
-            "never"
-        ],
+        "comma-style": [2, "last"],
+        "computed-property-spacing": [2, "never"],
         "eol-last": 2,
         "func-names": 1,
         "func-style": [
-            2,
-            "declaration",
-            {
-                "allowArrowFunctions": true
-            }
+          2,
+          "declaration",
+          {
+            "allowArrowFunctions": true
+          }
         ],
         "indent": [
-            2,
-            4,
-            {
-                "SwitchCase": 1
-            }
+          2,
+          4,
+          {
+            "SwitchCase": 1
+          }
         ],
         "linebreak-style": 0,
         "max-len": [
-            2,
-            200,
-            4,
-            {
-                "ignoreUrls": true,
-                "ignoreComments": false,
-                "ignorePattern": "^\\s*(const|let|var)\\s+\\w+\\s+\\=\\s+\\/.*\\/(|i|g|m|ig|im|gm|igm);?$"
-            }
+          2,
+          200,
+          4,
+          {
+            "ignoreUrls": true,
+            "ignoreComments": false,
+            "ignorePattern": "^\\s*(const|let|var)\\s+\\w+\\s+\\=\\s+\\/.*\\/(|i|g|m|ig|im|gm|igm);?$"
+          }
         ],
-        "max-nested-callbacks": [
-            2,
-            4
-        ],
+        "max-nested-callbacks": [2, 4],
         "new-parens": 2,
         "no-array-constructor": 2,
         "no-lonely-if": 2,
         "no-mixed-spaces-and-tabs": 2,
         "no-multiple-empty-lines": [
-            2,
-            {
-                "max": 2,
-                "maxEOF": 1
-            }
+          2,
+          {
+            "max": 2,
+            "maxEOF": 1
+          }
         ],
         "no-nested-ternary": 2,
         "no-new-object": 2,
         "no-spaced-func": 2,
         "no-trailing-spaces": 2,
         "no-unneeded-ternary": 2,
-        "object-curly-spacing": [
-            2,
-            "always"
-        ],
-        "one-var": [
-            2,
-            "never"
-        ],
-        "padded-blocks": [
-            2,
-            "never"
-        ],
-        "quotes": [
-            1,
-            "single",
-            "avoid-escape"
-        ],
+        "object-curly-spacing": [2, "always"],
+        "one-var": [2, "never"],
+        "padded-blocks": [2, "never"],
+        "quotes": [1, "single", "avoid-escape"],
         "semi-spacing": [
-            2,
-            {
-                "before": false,
-                "after": true
-            }
+          2,
+          {
+            "before": false,
+            "after": true
+          }
         ],
-        "semi": [
-            2,
-            "always"
-        ],
+        "semi": [2, "always"],
         "keyword-spacing": 2,
         "space-before-blocks": 2,
         "space-before-function-paren": [
-            2,
-            {
-                "anonymous": "always",
-                "named": "never"
-            }
+          2,
+          {
+            "anonymous": "always",
+            "named": "never"
+          }
         ],
-        "space-in-parens": [
-            2,
-            "never"
-        ],
+        "space-in-parens": [2, "never"],
         "space-infix-ops": 2,
         "space-unary-ops": [
-            2,
-            {
-                "words": true,
-                "nonwords": false
-            }
+          2,
+          {
+            "words": true,
+            "nonwords": false
+          }
         ],
         "spaced-comment": [
-            2,
-            "always",
-            {
-                "exceptions": [
-                    "-",
-                    "+"
-                ],
-                "markers": [
-                    "=",
-                    "!"
-                ]
-            }
+          2,
+          "always",
+          {
+            "exceptions": ["-", "+"],
+            "markers": ["=", "!"]
+          }
         ],
 
         // Legacy
-        "max-depth": [
-            0,
-            4
-        ],
-        "max-params": [
-            2,
-            7
-        ],
+        "max-depth": [0, 4],
+        "max-params": [2, 7],
         "no-bitwise": 2,
-        "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]
-    },
-    "globals": {
+        // These globals don't exist outside of CJS files.
+        "no-restricted-globals": [
+          "error",
+          { "name": "__filename" },
+          { "name": "__dirname" },
+          { "name": "require" },
+          { "name": "module" },
+          { "name": "exports" }
+        ]
+      },
+      "globals": {
         "$": true,
         "ga": true,
         "__ENV__": true,
         "__DEVTOOLS__": true,
         "PUBLIC_URL": true
+      }
     }
+  ]
 }

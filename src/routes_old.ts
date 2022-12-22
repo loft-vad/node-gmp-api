@@ -1,0 +1,121 @@
+import { Express, Request, Response } from "express";
+import validateSchema from "./middleware/validateSchema";
+import { userSchema } from "./schemas/user.schema";
+import { User } from "./types/user";
+import logger from "./utils/logger";
+import bodyParser from "body-parser";
+
+function getAutoSuggestUsers(loginSubstring: string, limit: number) {
+  const sortedUsers = users;
+  sortedUsers.sort((a, b) => (a.login > b.login ? 1 : b.login > a.login ? -1 : 0));
+  const resultArr = sortedUsers.filter((item) => item.login.includes(loginSubstring));
+  return resultArr.slice(0, limit);
+}
+
+// create application/json parser
+const jsonParser = bodyParser.json();
+
+const users: User[] = [];
+
+function routes(app: Express) {
+  app.get("/healthcheck", (req: Request, res: Response) => res.sendStatus(200));
+
+  // get user by id
+  app.get("/api/users/:id", (req: Request, res: Response) => {
+    logger.info(req.params.id);
+    const user = users.find((item) => item.id === req.params.id);
+    if (!user) {
+      res.status(404).json({
+        status: "failed",
+        message: `User ${req.params.id} doesn't exist`,
+      });
+    }
+    if (user?.isDeleted) {
+      res.status(404).json({
+        status: "failed",
+        message: `User ${req.params.id} deleted`,
+      });
+    }
+    res.json(user);
+  });
+
+  // create User
+  app.post("/api/users", validateSchema(userSchema), (req: Request, res: Response) => {
+    logger.info(req);
+    users.push(req.body);
+    res.json({ user: req.body });
+  });
+
+  // update User
+  app.put("/api/users", validateSchema(userSchema), (req: Request, res: Response) => {
+    logger.info(req);
+    const user = users.find((item) => item.id === req.body.id);
+    if (!user) {
+      res.status(404).json({
+        status: "failed",
+        message: `User ${req.body.id} doesn't exist`,
+      });
+    }
+    if (user?.isDeleted) {
+      res.status(404).json({
+        status: "failed",
+        message: `User ${req.body.id} deleted`,
+      });
+    }
+    users.forEach((item) => {
+      if (item.id === req.body.id) {
+        item.age = req.body.age;
+        item.login = req.body.login;
+        item.password = req.body.password;
+      }
+    });
+    res.json({ updatedUser: req.body });
+  });
+
+  // get auto-suggest list from limitusers, sorted by login property and filtered by loginSubstringin the login property:getAutoSuggestUsers(loginSubstring, limit)
+  app.get("/api/users", (req: Request, res: Response) => {
+    console.log("login: " + req.query.login, "limit: " + req.query.limit);
+
+    let limit = 1;
+    let login = "";
+
+    if (req.query.limit) {
+      limit = +req.query.limit;
+    }
+
+    if (req.query.login) {
+      login = req.query.login.toString();
+    }
+
+    if (limit < 1) {
+      res.status(400).json({
+        status: "failed",
+        message: "Can't select less then 1 user",
+      });
+    }
+
+    res.json(getAutoSuggestUsers(login, limit));
+  });
+
+  // remove user (soft delete–user gets marked with isDeletedflag, but not removed from the collection).
+  app.delete("/api/users", (req: Request, res: Response) => {
+    logger.info(req);
+    const user = users.find((item) => {
+      return item.id === req.body.id;
+    });
+    if (!user) {
+      res.status(404).json({
+        status: "failed",
+        message: `User ${req.body.id} doesn't exist`,
+      });
+    }
+    users.forEach((item) => {
+      if (item.id === req.body.id) {
+        item.isDeleted = true;
+      }
+    });
+    res.json({ deletedUser: req.body });
+  });
+}
+
+export default routes;

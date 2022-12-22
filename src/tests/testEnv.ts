@@ -1,0 +1,9 @@
+process.env.NODE_ENV = "test";
+process.env.PORT = 3333;
+process.env.DB_NAME = "users_db";
+process.env.DB_PORT = 5432;
+process.env.DB_USER = "postgres";
+process.env.DB_PASSWORD = "332hpRETp";
+process.env.DB_HOST = "localhost";
+process.env.CONNECTION_STRING = "postgres://postgres:332hpRETp@localhost:5432/users_db";
+process.env.SECRET_KEY = "asdasiuf92r92-1_@(29jda9dKlksmlal#r";
